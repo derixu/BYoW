@@ -46,7 +46,20 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        TETile[][] finalWorldFrame = null;
+        World World = new World(input, WIDTH, HEIGHT);
+        TETile[][] finalWorldFrame = World.ReturnWorldArr();
         return finalWorldFrame;
     }
+
+    public static void main(String[] args) {
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+
+        Engine engine = new Engine();
+        TETile[][] worldArr = engine.interactWithInputString("123");
+
+        ter.renderFrame(worldArr);
+
+    }
+
 }
