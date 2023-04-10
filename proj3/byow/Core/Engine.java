@@ -52,6 +52,7 @@ public class Engine {
     }
 
     public static void main(String[] args) {
+
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
 

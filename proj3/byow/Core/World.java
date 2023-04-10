@@ -1,5 +1,7 @@
 package byow.Core;
 
+import byow.Core.Rooms.RectangleRoom;
+import byow.Core.Rooms.Room;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -7,10 +9,13 @@ import byow.TileEngine.Tileset;
 import byow.Core.RandomUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class World {
     public TETile[][] WorldArr;
+    public HashSet<Room> Rooms = new HashSet<Room>();
     public World(String input, int width, int height) {
         WorldArr = new TETile[width][height];
         for (int x = 0; x < width; x++) {
@@ -20,25 +25,35 @@ public class World {
         }
         int minRooms = 15;
         int maxRooms = 20;
-        int numRooms = RandomUtils.uniform(new Random(123),minRooms,  maxRooms);
+
+        Random seed = new Random(123);
+
+        int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
 
         for (int n = 0; n <= numRooms; n++) {
+            int roomWidth = RandomUtils.uniform(seed,3,  20);
+            int roomHeight = RandomUtils.uniform(seed,3,  20);
 
-            int roomWidth = RandomUtils.uniform(new Random(123+n),3,  20);
-            int roomHeight = RandomUtils.uniform(new Random(123+n*2),3,  20);
-
-            int x = RandomUtils.uniform(new Random(123+n),0,  width-roomWidth);
-            int y = RandomUtils.uniform(new Random(123+n*2),0,  height-roomHeight);
-
+            int x = RandomUtils.uniform(seed,0,  width-roomWidth);
+            int y = RandomUtils.uniform(seed,0,  height-roomHeight);
             RectangleRoom room = new RectangleRoom(x, y, roomWidth, roomHeight);
 
-            for (int[] wallCoordinates : room.Walls) {
-                WorldArr[wallCoordinates[0]][wallCoordinates[1]] = Tileset.WALL;
+            while (room.Overlap(Rooms)) {
+                x = RandomUtils.uniform(seed,0,  width-roomWidth);
+                y = RandomUtils.uniform(seed,0,  height-roomHeight);
+                room = new RectangleRoom(x, y, roomWidth, roomHeight);
             }
 
-            for (int[] floorCoordinates : room.Floors) {
-                WorldArr[floorCoordinates[0]][floorCoordinates[1]] = Tileset.GRASS;
+            for (ArrayList<Integer> wallCoordinates : room.Walls) {
+                WorldArr[wallCoordinates.get(0)][wallCoordinates.get(1)] = Tileset.WALL;
             }
+
+            for (ArrayList<Integer> floorCoordinates : room.Floors) {
+                WorldArr[floorCoordinates.get(0)][floorCoordinates.get(1)] = Tileset.GRASS;
+            }
+
+            Rooms.add(room);
+
         }
     }
 
@@ -46,30 +61,8 @@ public class World {
         return WorldArr;
     }
 
-    private class RectangleRoom {
-        public int[][] Walls; //coordinates of all wall tiles
-        public int[][] Floors; //coordinates of all floor tiles
-        public RectangleRoom(int x, int y, int width, int height) {
-            // (x1, y1) coordinates of bottom left corner
-            Walls = new int[width*2 + height*2 - 4][2];//each coordinate has two values, there are width*2 + height*2 - 4 coordinates (subtract 4 corners due to overlap)
-            Floors = new int[width*height - Walls.length][2];
-            int wall_index = 0;
-            int floor_index = 0;
-            for (int curr_x = x; curr_x < x + width; curr_x++) {
-                for (int curr_y = y; curr_y < y + height; curr_y++) {
-                    if (curr_x == x || curr_y == y || curr_x == x+width-1 || curr_y == y+height-1) {
-                        Walls[wall_index] = new int[]{curr_x, curr_y};
-                        wall_index++;
-                    }
-                    else {
-                        Floors[floor_index] = new int[]{curr_x, curr_y};
-                        floor_index++;
-                    }
-                }
-            }
-        }
-    }
     public static void main(String[] args) {
+
         TERenderer ter = new TERenderer();
         ter.initialize(100, 100);
 
