@@ -7,8 +7,8 @@ import byow.TileEngine.TETile;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 90;
-    public static final int HEIGHT = 40;
+    public static final int WIDTH = 80;
+    public static final int HEIGHT = 30;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -75,7 +75,7 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT);
 
         Engine engine = new Engine();
-        TETile[][] worldArr = engine.interactWithInputString("n835s");
+        TETile[][] worldArr = engine.interactWithInputString("n327770108009882166s");
 
         ter.renderFrame(worldArr);
 

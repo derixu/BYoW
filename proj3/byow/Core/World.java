@@ -32,7 +32,7 @@ public class World {
         //int minRooms = 20;
         //int maxRooms = 25;
         //int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
-        int numRooms = width*height/100;
+        int numRooms = width*height/150;
 
         //create rooms based on numRooms
         for (int n = 0; n <= numRooms; n++) {
@@ -148,10 +148,10 @@ public class World {
     public static void main(String[] args) {
 
         TERenderer ter = new TERenderer();
-        ter.initialize(90, 40);
+        ter.initialize(80, 30);
 
 
-        World world = new World( 768586380, 90, 40);
+        World world = new World( 3277701080089882166L, 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);
