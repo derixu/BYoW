@@ -29,27 +29,31 @@ public class World {
 
 
         //parameterize the world (important part is setting numRooms to an integer, process is adaptable
-        //int minRooms = 20;
-        //int maxRooms = 25;
-        //int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
-        int numRooms = width*height/150;
+        int minRooms = 5;
+        int maxRooms = 25;
+        int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
 
         //create rooms based on numRooms
         for (int n = 0; n <= numRooms; n++) {
 
             //parameterize the room and create it
-            int roomWidth = RandomUtils.uniform(seed, 4,  10);
-            int roomHeight = RandomUtils.uniform(seed, 4,  10);
+            int roomWidth = RandomUtils.uniform(seed, 4,  12);
+            int roomHeight = RandomUtils.uniform(seed, 4,  12);
 
             int x = RandomUtils.uniform(seed, 0,  width - roomWidth);
             int y = RandomUtils.uniform(seed, 0,  height - roomHeight);
             RectangleRoom room = new RectangleRoom(x, y, roomWidth, roomHeight);
 
             //if room overlaps with any previous rooms in the world, redo parameterization and initialization
+            int tries = 0;
             while (room.overlap(rooms)) {
+                if (tries > 20) {
+                    break;
+                }
                 x = RandomUtils.uniform(seed, 0,  width - roomWidth);
                 y = RandomUtils.uniform(seed, 0,  height - roomHeight);
                 room = new RectangleRoom(x, y, roomWidth, roomHeight);
+                tries++;
             }
 
             //add new room walls to world array with unique tile
@@ -151,7 +155,7 @@ public class World {
         ter.initialize(80, 30);
 
 
-        World world = new World( 3277701080089882166L, 80, 30);
+        World world = new World( 800421773788498935L, 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);
