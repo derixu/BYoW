@@ -70,19 +70,27 @@ public class World {
             rooms.add(room);
         }
 
+        //create a copy of the rooms list so that we can mutate it without risks
         ArrayList<Room> mutableRooms = new ArrayList<>(rooms);
+
+        //iterate through rooms and connect them with their closest room that has not been iterated on yet
+        //this algorithm could potentially use improvement to prevent excessive overlaps
+        //also horrible runtime in theory
         for (int i = 0; i < rooms.size() - 1; i++) {
             double x = Double.valueOf(rooms.get(i).getWalls().get(0).get(0));
             double y = Double.valueOf(rooms.get(i).getWalls().get(0).get(1));
 
+            //initialize closest to an arbitrary room with max distance
             Room closest = new RectangleRoom(0, 0, 0, 0);
             double distance = Double.MAX_VALUE;
 
             for (Room possible : mutableRooms) {
                 double posX = Double.valueOf(possible.getWalls().get(0).get(0));
                 double posY = Double.valueOf(possible.getWalls().get(0).get(1));
+                //calculate Euclidean distance
                 double posDist = Math.sqrt(Math.pow(x - posX, 2) + Math.pow(y - posY, 2));
 
+                //replace if closer than current closest
                 if (posDist != 0 && posDist < distance) {
                     closest = possible;
                     distance = posDist;
@@ -95,6 +103,7 @@ public class World {
 
     private void hallwayHelper(TETile[][] worldArr, Room r1, Room r2) {
 
+        //get coordinates of each room (random floor coordinate)
         int x1 = r1.getFloors().get(RandomUtils.uniform(seed, 0, r1.getFloors().size())).get(0);
         int y1 = r1.getFloors().get(RandomUtils.uniform(seed, 0, r1.getFloors().size())).get(1);
 
@@ -102,8 +111,11 @@ public class World {
         int y2 = r2.getFloors().get(RandomUtils.uniform(seed, 0, r2.getFloors().size())).get(1);
 
 
+        //create a path from coordinate 1 to 2 starting with x, as we step through the tiles, we change the tiles to floors
         while (x1 != x2) {
             worldArr[x1][y1] = Tileset.GRASS;
+            //if the adjacent tiles are nothing (are not walls or floors since we can pass through other rooms on our path)
+            //change nothing to walls to enclose the hallway
             if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
                 worldArr[x1][y1 + 1] = Tileset.WALL;
             }
@@ -116,6 +128,7 @@ public class World {
                 x1--;
             }
         }
+        //handle corner walls
         if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
             worldArr[x1][y1 + 1] = Tileset.WALL;
         }
@@ -123,6 +136,7 @@ public class World {
             worldArr[x1][y1 - 1] = Tileset.WALL;
         }
 
+        //repeat for y
         while (y1 != y2) {
             worldArr[x1][y1] = Tileset.GRASS;
             if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
@@ -137,6 +151,7 @@ public class World {
                 y1--;
             }
         }
+        //handle corner walls
         if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
             worldArr[x1 + 1][y1] = Tileset.WALL;
         }
