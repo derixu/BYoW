@@ -209,7 +209,7 @@ public class World {
         ter.initialize(80, 30);
 
 
-        World world = new World( 800421773388498935L, 80, 30);
+        World world = new World( 87644678, 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);
