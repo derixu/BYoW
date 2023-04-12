@@ -37,8 +37,8 @@ public class World {
         for (int n = 0; n <= numRooms; n++) {
 
             //parameterize the room and create it
-            int roomWidth = RandomUtils.uniform(seed, 4,  12);
-            int roomHeight = RandomUtils.uniform(seed, 4,  12);
+            int roomWidth = RandomUtils.uniform(seed, 4,  10);
+            int roomHeight = RandomUtils.uniform(seed, 4,  10);
 
             int x = RandomUtils.uniform(seed, 0,  width - roomWidth);
             int y = RandomUtils.uniform(seed, 0,  height - roomHeight);
@@ -114,25 +114,55 @@ public class World {
         int x2 = r2.getFloors().get(RandomUtils.uniform(seed, 0, r2.getFloors().size())).get(0);
         int y2 = r2.getFloors().get(RandomUtils.uniform(seed, 0, r2.getFloors().size())).get(1);
 
-
         //create a path from coordinate 1 to 2 starting with x, as we step through the tiles, we change the tiles to floors
-        while (x1 != x2) {
-            worldArr[x1][y1] = Tileset.GRASS;
-            //if the adjacent tiles are nothing (are not walls or floors since we can pass through other rooms on our path)
-            //change nothing to walls to enclose the hallway
-            if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
-                worldArr[x1][y1 + 1] = Tileset.WALL;
-            }
-            if (worldArr[x1][y1 - 1] == Tileset.NOTHING) {
-                worldArr[x1][y1 - 1] = Tileset.WALL;
-            }
-            if (x1 < x2) {
+
+        //if our start x is less than our end x, increment right until we reach the end x value
+        if (x1 < x2) {
+            while (x1 < x2) {
+                worldArr[x1][y1] = Tileset.GRASS;
+                //if the adjacent tiles are nothing (are not walls or floors since we can pass through other rooms on our path)
+                //change nothing to walls to enclose the hallway
+                if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
+                    worldArr[x1][y1 + 1] = Tileset.WALL;
+                }
+                if (worldArr[x1][y1 - 1] == Tileset.NOTHING) {
+                    worldArr[x1][y1 - 1] = Tileset.WALL;
+                }
                 x1++;
-            } else {
-                x1--;
+            }
+            //ensure that the corners are filled
+            if (worldArr[x1+1][y1 + 1] == Tileset.NOTHING) {
+                worldArr[x1+1][y1 + 1] = Tileset.WALL;
+            }
+            if (worldArr[x1+1][y1 - 1] == Tileset.NOTHING) {
+                worldArr[x1+1][y1 - 1] = Tileset.WALL;
             }
         }
-        //handle corner walls
+
+        //if our start x is greater than our end x, increment left
+        if (x1 > x2) {
+            while (x1 > x2) {
+                worldArr[x1][y1] = Tileset.GRASS;
+                //if the adjacent tiles are nothing (are not walls or floors since we can pass through other rooms on our path)
+                //change nothing to walls to enclose the hallway
+                if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
+                    worldArr[x1][y1 + 1] = Tileset.WALL;
+                }
+                if (worldArr[x1][y1 - 1] == Tileset.NOTHING) {
+                    worldArr[x1][y1 - 1] = Tileset.WALL;
+                }
+                x1--;
+            }
+            //ensure that the corners are filled
+            if (worldArr[x1-1][y1 + 1] == Tileset.NOTHING) {
+                worldArr[x1-1][y1 + 1] = Tileset.WALL;
+            }
+            if (worldArr[x1-1][y1 - 1] == Tileset.NOTHING) {
+                worldArr[x1-1][y1 - 1] = Tileset.WALL;
+            }
+        }
+
+        //handle last wall tile on the x-axis wall before turn
         if (worldArr[x1][y1 + 1] == Tileset.NOTHING) {
             worldArr[x1][y1 + 1] = Tileset.WALL;
         }
@@ -140,27 +170,32 @@ public class World {
             worldArr[x1][y1 - 1] = Tileset.WALL;
         }
 
-        //repeat for y
-        while (y1 != y2) {
-            worldArr[x1][y1] = Tileset.GRASS;
-            if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
-                worldArr[x1 + 1][y1] = Tileset.WALL;
-            }
-            if (worldArr[x1 - 1][y1] == Tileset.NOTHING) {
-                worldArr[x1 - 1][y1] = Tileset.WALL;
-            }
-            if (y1 < y2) {
+        //if our start y is less than our end y, increment up until we reach our end y
+        if (y1 < y2) {
+            while (y1 < y2) {
+                worldArr[x1][y1] = Tileset.GRASS;
+                if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
+                    worldArr[x1 + 1][y1] = Tileset.WALL;
+                }
+                if (worldArr[x1 - 1][y1] == Tileset.NOTHING) {
+                    worldArr[x1 - 1][y1] = Tileset.WALL;
+                }
                 y1++;
-            } else {
+            }
+        }
+
+        //if our start y is greater than our end y, increment down
+        if (y1 > y2) {
+            while (y1 > y2) {
+                worldArr[x1][y1] = Tileset.GRASS;
+                if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
+                    worldArr[x1 + 1][y1] = Tileset.WALL;
+                }
+                if (worldArr[x1 - 1][y1] == Tileset.NOTHING) {
+                    worldArr[x1 - 1][y1] = Tileset.WALL;
+                }
                 y1--;
             }
-        }
-        //handle corner walls
-        if (worldArr[x1 + 1][y1] == Tileset.NOTHING) {
-            worldArr[x1 + 1][y1] = Tileset.WALL;
-        }
-        if (worldArr[x1 - 1][y1] == Tileset.NOTHING) {
-            worldArr[x1 - 1][y1] = Tileset.WALL;
         }
     }
 
@@ -174,7 +209,7 @@ public class World {
         ter.initialize(80, 30);
 
 
-        World world = new World( 800421773788498935L, 80, 30);
+        World world = new World( 800421773388498935L, 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);
