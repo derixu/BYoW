@@ -1,13 +1,14 @@
 package byow.Core;
 
+import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int WIDTH = 90;
+    public static final int HEIGHT = 40;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -46,8 +47,27 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        World World = new World(input, WIDTH, HEIGHT);
-        TETile[][] finalWorldFrame = World.ReturnWorldArr();
+        int seed = 0;
+        Boolean worldStarted = false;
+        Boolean seedFinished = false;
+        StringInputDevice inputDev = new StringInputDevice(input);
+
+        while (inputDev.possibleNextInput()) {
+            char c = inputDev.getNextKey();
+            if (Character.toTitleCase(c) == 'N') {
+                worldStarted = true;
+            }
+            if (worldStarted && !seedFinished && Character.isDigit(c)) {
+                seed = seed * 10 + Integer.valueOf(c);
+            }
+            if (worldStarted && Character.toTitleCase(c) == 'S') {
+                seed = seed * 10 + Integer.valueOf(c);
+                seedFinished = true;
+            }
+        }
+
+        World world = new World(seed, WIDTH, HEIGHT);
+        TETile[][] finalWorldFrame = world.returnWorldArr();
         return finalWorldFrame;
     }
 
@@ -57,7 +77,7 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT);
 
         Engine engine = new Engine();
-        TETile[][] worldArr = engine.interactWithInputString("123");
+        TETile[][] worldArr = engine.interactWithInputString("N12334S");
 
         ter.renderFrame(worldArr);
 

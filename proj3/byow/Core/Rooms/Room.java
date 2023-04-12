@@ -1,15 +1,14 @@
 package byow.Core.Rooms;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 //created interface for new room types in the future (different shapes maybe)
 public interface Room {
 
-    public HashSet<ArrayList<Integer>> GetWalls();
+    public ArrayList<ArrayList<Integer>> getWalls();
 
-    public HashSet<ArrayList<Integer>> GetFloors();
+    public ArrayList<ArrayList<Integer>> getFloors();
 
-    public Boolean Overlap(HashSet<Room> rooms);
+    public Boolean overlap(ArrayList<Room> rooms);
 
 }

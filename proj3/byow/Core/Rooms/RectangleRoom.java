@@ -2,43 +2,40 @@ package byow.Core.Rooms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 public class RectangleRoom implements Room {
-    public HashSet<ArrayList<Integer>> Walls; //coordinates of all wall tiles
-    public HashSet<ArrayList<Integer>> Floors; //coordinates of all floor tiles
+    private ArrayList<ArrayList<Integer>> walls; //coordinates of all wall tiles
+    private ArrayList<ArrayList<Integer>> floors; //coordinates of all floor tiles
     public RectangleRoom(int x, int y, int width, int height) {
         // (x, y) coordinates of bottom left corner
-        Walls = new HashSet<>();
-        Floors = new HashSet<>();
+        walls = new ArrayList<>();
+        floors = new ArrayList<>();
 
         //iterate through all coordinates of tiles covered by the room
-        for (int curr_x = x; curr_x < x + width; curr_x++) {
-            for (int curr_y = y; curr_y < y + height; curr_y++) {
+        for (int currX = x; currX < x + width; currX++) {
+            for (int currY = y; currY < y + height; currY++) {
                 //if the tile is on the edge, add to wall set
-                if (curr_x == x || curr_y == y || curr_x == x+width-1 || curr_y == y+height-1) {
-                    Walls.add(new ArrayList<>(Arrays.asList(curr_x, curr_y)));
-                }
-                //else add to floor set
-                else {
-                    Floors.add(new ArrayList<>(Arrays.asList(curr_x, curr_y)));
+                if (currX == x || currY == y || currX == x + width - 1 || currY == y + height - 1) {
+                    walls.add(new ArrayList<>(Arrays.asList(currX, currY)));
+                } else { //else add to floor set
+                    floors.add(new ArrayList<>(Arrays.asList(currX, currY)));
                 }
             }
         }
     }
 
     @Override
-    public HashSet<ArrayList<Integer>> GetWalls() {
-        return Walls;
+    public ArrayList<ArrayList<Integer>> getWalls() {
+        return walls;
     }
 
     @Override
-    public HashSet<ArrayList<Integer>> GetFloors() {
-        return Floors;
+    public ArrayList<ArrayList<Integer>> getFloors() {
+        return floors;
     }
 
     @Override
-    public Boolean Overlap(HashSet<Room> rooms) {
+    public Boolean overlap(ArrayList<Room> rooms) {
         for (Room room : rooms) {
             //check for overlaps
             // 3 possible cases:
@@ -47,13 +44,13 @@ public class RectangleRoom implements Room {
             // only floors overlap (one room contains the entire other room)
             //to check we must make sure neither walls overlap each other and neither floors overlap each other
 
-            for (ArrayList coordinates : room.GetWalls()) {
-                if (this.Walls.contains(coordinates)) {
+            for (ArrayList coordinates : room.getWalls()) {
+                if (this.walls.contains(coordinates)) {
                     return true;
                 }
             }
-            for (ArrayList coordinates : room.GetFloors()) {
-                if (this.Floors.contains(coordinates)) {
+            for (ArrayList coordinates : room.getFloors()) {
+                if (this.floors.contains(coordinates)) {
                     return true;
                 }
             }
