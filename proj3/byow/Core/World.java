@@ -56,6 +56,10 @@ public class World {
                 tries++;
             }
 
+            if (tries > 20) {
+                continue;
+            }
+
             //add new room walls to world array with unique tile
             for (ArrayList<Integer> wallCoordinates : room.getWalls()) {
                 worldArray[wallCoordinates.get(0)][wallCoordinates.get(1)] = Tileset.WALL;
