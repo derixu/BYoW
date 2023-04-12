@@ -32,7 +32,7 @@ public class World {
         //int minRooms = 20;
         //int maxRooms = 25;
         //int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
-        int numRooms = 25;
+        int numRooms = width*height/100;
 
         //create rooms based on numRooms
         for (int n = 0; n <= numRooms; n++) {
