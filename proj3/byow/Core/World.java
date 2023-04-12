@@ -14,7 +14,7 @@ public class World {
     private ArrayList<Room> rooms = new ArrayList<>();
 
     private Random seed;
-    public World(int seedNum, int width, int height) {
+    public World(long seedNum, int width, int height) {
 
         //initialize World as empty
         worldArray = new TETile[width][height];
@@ -148,9 +148,10 @@ public class World {
     public static void main(String[] args) {
 
         TERenderer ter = new TERenderer();
-        ter.initialize(20, 20);
+        ter.initialize(90, 40);
 
-        World world = new World(123, 20, 20);
+
+        World world = new World( 768586380, 90, 40);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);

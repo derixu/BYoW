@@ -39,7 +39,6 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
-        // TODO: Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
@@ -47,7 +46,7 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        int seed = 0;
+        String seed = "";
         Boolean worldStarted = false;
         Boolean seedFinished = false;
         StringInputDevice inputDev = new StringInputDevice(input);
@@ -58,15 +57,14 @@ public class Engine {
                 worldStarted = true;
             }
             if (worldStarted && !seedFinished && Character.isDigit(c)) {
-                seed = seed * 10 + Integer.valueOf(c);
+                seed += c;
             }
             if (worldStarted && Character.toTitleCase(c) == 'S') {
-                seed = seed * 10 + Integer.valueOf(c);
                 seedFinished = true;
             }
         }
 
-        World world = new World(seed, WIDTH, HEIGHT);
+        World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = world.returnWorldArr();
         return finalWorldFrame;
     }
@@ -77,7 +75,7 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT);
 
         Engine engine = new Engine();
-        TETile[][] worldArr = engine.interactWithInputString("N12334S");
+        TETile[][] worldArr = engine.interactWithInputString("n835s");
 
         ter.renderFrame(worldArr);
 
