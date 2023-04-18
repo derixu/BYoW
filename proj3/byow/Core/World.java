@@ -119,12 +119,16 @@ public class World {
 
     private void hallwayHelper(Room r1, Room r2) {
 
-        //get coordinates of each room (random floor coordinate)
-        int x1 = r1.getFloors().get(RandomUtils.uniform(seed, 0, r1.getFloors().size())).get(0);
-        int y1 = r1.getFloors().get(RandomUtils.uniform(seed, 0, r1.getFloors().size())).get(1);
+        //randomly choose an index to retrieve a random floor tile from the floors of each room
+        int index1 = RandomUtils.uniform(seed, 0, r1.getFloors().size());
+        int index2 = RandomUtils.uniform(seed, 0, r2.getFloors().size());
 
-        int x2 = r2.getFloors().get(RandomUtils.uniform(seed, 0, r2.getFloors().size())).get(0);
-        int y2 = r2.getFloors().get(RandomUtils.uniform(seed, 0, r2.getFloors().size())).get(1);
+        //get coordinates of each room (random floor coordinate)
+        int x1 = r1.getFloors().get(index1).get(0);
+        int y1 = r1.getFloors().get(index1).get(1);
+
+        int x2 = r2.getFloors().get(index2).get(0);
+        int y2 = r2.getFloors().get(index2).get(1);
 
         //create a path from coordinate 1 to 2 starting with x, as we step through the tiles, we change the tiles to floors
 
@@ -188,7 +192,7 @@ public class World {
         ter.initialize(80, 30);
 
 
-        World world = new World(87644678, 80, 30);
+        World world = new World(8764478, 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);
