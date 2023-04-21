@@ -42,23 +42,31 @@ public class Engine {
             if (worldStarted && Character.toTitleCase(c) == 'S' && !seed.isEmpty()) {
                 seedFinished = true;
             }
+            if (Character.toTitleCase(c) == 'Q') {
+                System.exit(0);
+            }
         }
 
         Long seedNum = Long.valueOf(seed);
         World world = new World(seedNum, WIDTH, HEIGHT);
-        TETile[][] finalWorldFrame = world.returnWorldArr();
-        ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(world.returnWorldArr());
 
         Avatar avi = new Avatar(seedNum, world, ter);
+        boolean colonPress = false;
 
         while(true) {
             char c = inputDev.getNextKey();
             solicitMovements(avi, c);
-            ter.renderFrame(finalWorldFrame);
+            ter.renderFrame(world.returnWorldArr());
 
-            if (Character.toTitleCase(c) == 'Q') {
+            if (Character.toTitleCase(c) == ':') {
+                colonPress = true;
+                continue;
+            }
+            if (colonPress && Character.toTitleCase(c) == 'Q') {
                 System.exit(0);
             }
+            colonPress = false;
         }
 
     }

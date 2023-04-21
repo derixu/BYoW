@@ -191,6 +191,10 @@ public class World {
         return rooms;
     }
 
+    public void alterTiles(int x, int y, TETile tile) {
+        worldArray[x][y] = tile;
+    }
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(80, 30);

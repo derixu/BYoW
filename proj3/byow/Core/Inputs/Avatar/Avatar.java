@@ -17,11 +17,11 @@ public class Avatar {
     int y;
     Random seed;
     TETile avatar = Tileset.AVATAR;
-    TETile[][] worldArr;
+    World world;
     TERenderer ter;
     public Avatar(Long seedNum, World world, TERenderer ter) {
         seed = new Random(seedNum);
-        worldArr = world.returnWorldArr();
+        this.world = world;
         this.ter = ter;
 
         //find starting room
@@ -36,8 +36,8 @@ public class Avatar {
         x = coordinates.get(0);
         y = coordinates.get(1);
 
-        avatar.draw(x, y);
-        StdDraw.show();
+        this.world.alterTiles(x, y, avatar);
+        ter.renderFrame(world.returnWorldArr());
     }
 
     public void move(String direction) {
@@ -50,9 +50,9 @@ public class Avatar {
             case "right" -> nextX++;
             case "left" -> nextX--;
         }
-        if (worldArr[nextX][nextY] != Tileset.WALL) {
-            worldArr[x][y] = Tileset.GRASS;
-            worldArr[nextX][nextY] = avatar;
+        if (world.returnWorldArr()[nextX][nextY] != Tileset.WALL) {
+            world.alterTiles(x, y, Tileset.GRASS);
+            world.alterTiles(nextX, nextY, avatar);
             x = nextX;
             y = nextY;
         }
