@@ -1,8 +1,12 @@
 package byow.Core;
 
-import byow.InputDemo.StringInputDevice;
+import byow.Core.Inputs.KeyboardInputs;
+import byow.Core.Inputs.StringInputs;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.algs4.StdDraw;
+
+import java.awt.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -15,6 +19,31 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        String seed = "";
+        Boolean worldStarted = false;
+        Boolean seedFinished = false;
+        KeyboardInputs inputDev = new KeyboardInputs(WIDTH, HEIGHT);
+
+        inputDev.initializeUI();
+
+        while (!seedFinished) {
+            char c = inputDev.getNextKey();
+            if (Character.toTitleCase(c) == 'N') {
+                worldStarted = true;
+                inputDev.promptSeed(seed);
+            }
+            if (worldStarted && Character.isDigit(c)) {
+                seed += c;
+                inputDev.promptSeed(seed);
+            }
+            if (worldStarted && Character.toTitleCase(c) == 'S' && !seed.isEmpty()) {
+                seedFinished = true;
+            }
+        }
+
+        World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
+        TETile[][] finalWorldFrame = world.returnWorldArr();
+        ter.renderFrame(finalWorldFrame);
     }
 
     /**
@@ -38,7 +67,7 @@ public class Engine {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
-    public TETile[][] interactWithInputString(String input) {
+    public void interactWithInputString(String input) {
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
@@ -49,7 +78,7 @@ public class Engine {
         String seed = "";
         Boolean worldStarted = false;
         Boolean seedFinished = false;
-        StringInputDevice inputDev = new StringInputDevice(input);
+        StringInputs inputDev = new StringInputs(input);
 
         while (inputDev.possibleNextInput()) {
             char c = inputDev.getNextKey();
@@ -66,7 +95,7 @@ public class Engine {
 
         World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = world.returnWorldArr();
-        return finalWorldFrame;
+        ter.renderFrame(finalWorldFrame);
     }
 
     public static void main(String[] args) {
@@ -75,9 +104,7 @@ public class Engine {
         ter.initialize(WIDTH, HEIGHT);
 
         Engine engine = new Engine();
-        TETile[][] worldArr = engine.interactWithInputString("n327770108009882166s");
-
-        ter.renderFrame(worldArr);
+        engine.interactWithKeyboard();
 
     }
 
