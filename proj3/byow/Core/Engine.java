@@ -123,9 +123,19 @@ public class Engine {
         World world = new World(seedNum, WIDTH, HEIGHT);
         Avatar avi = new Avatar(seedNum, world, ter);
 
+        boolean colonPress = false;
         while(inputDev.possibleNextInput()) {
             char c = inputDev.getNextKey();
             solicitMovements(avi, c);
+
+            if (Character.toTitleCase(c) == ':') {
+                colonPress = true;
+                continue;
+            }
+            if (colonPress && Character.toTitleCase(c) == 'Q') {
+                System.exit(0);
+            }
+            colonPress = false;
         }
         return world.returnWorldArr();
     }
@@ -152,7 +162,6 @@ public class Engine {
 
         Engine engine = new Engine();
         engine.interactWithKeyboard();
-
     }
 
 }
