@@ -187,6 +187,10 @@ public class World {
         return worldArray;
     }
 
+    public ArrayList<Room> returnRooms() {
+        return rooms;
+    }
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(80, 30);

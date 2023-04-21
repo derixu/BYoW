@@ -1,5 +1,6 @@
 package byow.Core;
 
+import byow.Core.Inputs.Avatar.Avatar;
 import byow.Core.Inputs.KeyboardInputs;
 import byow.Core.Inputs.StringInputs;
 import byow.Core.Inputs.UserInterface;
@@ -43,9 +44,32 @@ public class Engine {
             }
         }
 
-        World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
+        Long seedNum = Long.valueOf(seed);
+        World world = new World(seedNum, WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = world.returnWorldArr();
         ter.renderFrame(finalWorldFrame);
+
+        Avatar avi = new Avatar(seedNum, world, ter);
+
+        while(true) {
+            char c = inputDev.getNextKey();
+            if (Character.toTitleCase(c) == 'W') {
+                avi.move("up");
+            }
+            if (Character.toTitleCase(c) == 'A') {
+                avi.move("left");
+            }
+            if (Character.toTitleCase(c) == 'S') {
+                avi.move("down");
+            }
+            if (Character.toTitleCase(c) == 'D') {
+                avi.move("right");
+            }
+            if (Character.toTitleCase(c) == 'Q') {
+                System.exit(0);
+            }
+        }
+
     }
 
     /**
