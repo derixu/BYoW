@@ -53,18 +53,7 @@ public class Engine {
 
         while(true) {
             char c = inputDev.getNextKey();
-            if (Character.toTitleCase(c) == 'W') {
-                avi.move("up");
-            }
-            if (Character.toTitleCase(c) == 'A') {
-                avi.move("left");
-            }
-            if (Character.toTitleCase(c) == 'S') {
-                avi.move("down");
-            }
-            if (Character.toTitleCase(c) == 'D') {
-                avi.move("right");
-            }
+            solicitMovements(avi, c);
             ter.renderFrame(finalWorldFrame);
 
             if (Character.toTitleCase(c) == 'Q') {
@@ -128,22 +117,25 @@ public class Engine {
 
         while(inputDev.possibleNextInput()) {
             char c = inputDev.getNextKey();
-            if (Character.toTitleCase(c) == 'W') {
-                avi.move("up");
-            }
-            if (Character.toTitleCase(c) == 'A') {
-                avi.move("left");
-            }
-            if (Character.toTitleCase(c) == 'S') {
-                avi.move("down");
-            }
-            if (Character.toTitleCase(c) == 'D') {
-                avi.move("right");
-            }
+            solicitMovements(avi, c);
         }
         return world.returnWorldArr();
     }
 
+    private void solicitMovements(Avatar avi, char c) {
+        if (Character.toTitleCase(c) == 'W') {
+            avi.move("up");
+        }
+        if (Character.toTitleCase(c) == 'A') {
+            avi.move("left");
+        }
+        if (Character.toTitleCase(c) == 'S') {
+            avi.move("down");
+        }
+        if (Character.toTitleCase(c) == 'D') {
+            avi.move("right");
+        }
+    }
 
     public static void main(String[] args) {
 
