@@ -2,6 +2,7 @@ package byow.Core;
 
 import byow.Core.Inputs.KeyboardInputs;
 import byow.Core.Inputs.StringInputs;
+import byow.Core.Inputs.UserInterface;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import edu.princeton.cs.algs4.StdDraw;
@@ -22,19 +23,20 @@ public class Engine {
         String seed = "";
         Boolean worldStarted = false;
         Boolean seedFinished = false;
-        KeyboardInputs inputDev = new KeyboardInputs(WIDTH, HEIGHT);
+        KeyboardInputs inputDev = new KeyboardInputs();
+        UserInterface UI = new UserInterface(WIDTH, HEIGHT);
 
-        inputDev.initializeUI();
+        UI.startScreen();
 
         while (!seedFinished) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
                 worldStarted = true;
-                inputDev.promptSeed(seed);
+                UI.seedPrompt(seed);
             }
             if (worldStarted && Character.isDigit(c)) {
                 seed += c;
-                inputDev.promptSeed(seed);
+                UI.seedPrompt(seed);
             }
             if (worldStarted && Character.toTitleCase(c) == 'S' && !seed.isEmpty()) {
                 seedFinished = true;
@@ -67,7 +69,7 @@ public class Engine {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
-    public void interactWithInputString(String input) {
+    public TETile[][] interactWithInputString(String input) {
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
@@ -80,6 +82,7 @@ public class Engine {
         Boolean seedFinished = false;
         StringInputs inputDev = new StringInputs(input);
 
+        //retrieve seed from user input
         while (inputDev.possibleNextInput()) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
@@ -93,9 +96,9 @@ public class Engine {
             }
         }
 
+        //initialize world based on seed
         World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
-        TETile[][] finalWorldFrame = world.returnWorldArr();
-        ter.renderFrame(finalWorldFrame);
+        return world.returnWorldArr();
     }
 
     public static void main(String[] args) {

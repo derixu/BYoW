@@ -38,7 +38,7 @@ public class World {
         int maxRooms = 25;
         int numRooms = RandomUtils.uniform(seed, minRooms, maxRooms);
 
-        int minLength = 4;
+        int minLength = 5;
         int maxLength = 10;
 
         //create rooms using parameters
