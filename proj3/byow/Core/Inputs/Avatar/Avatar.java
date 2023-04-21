@@ -55,7 +55,6 @@ public class Avatar {
             worldArr[nextX][nextY] = avatar;
             x = nextX;
             y = nextY;
-            ter.renderFrame(worldArr);
         }
     }
 }

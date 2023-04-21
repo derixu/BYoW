@@ -65,6 +65,8 @@ public class Engine {
             if (Character.toTitleCase(c) == 'D') {
                 avi.move("right");
             }
+            ter.renderFrame(finalWorldFrame);
+
             if (Character.toTitleCase(c) == 'Q') {
                 System.exit(0);
             }
@@ -107,23 +109,41 @@ public class Engine {
         StringInputs inputDev = new StringInputs(input);
 
         //retrieve seed from user input
-        while (inputDev.possibleNextInput()) {
+        while (inputDev.possibleNextInput() && !seedFinished) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
                 worldStarted = true;
             }
-            if (worldStarted && !seedFinished && Character.isDigit(c)) {
+            if (worldStarted && Character.isDigit(c)) {
                 seed += c;
             }
             if (worldStarted && Character.toTitleCase(c) == 'S') {
                 seedFinished = true;
             }
         }
-
         //initialize world based on seed
-        World world = new World(Long.valueOf(seed), WIDTH, HEIGHT);
+        Long seedNum = Long.valueOf(seed);
+        World world = new World(seedNum, WIDTH, HEIGHT);
+        Avatar avi = new Avatar(seedNum, world, ter);
+
+        while(inputDev.possibleNextInput()) {
+            char c = inputDev.getNextKey();
+            if (Character.toTitleCase(c) == 'W') {
+                avi.move("up");
+            }
+            if (Character.toTitleCase(c) == 'A') {
+                avi.move("left");
+            }
+            if (Character.toTitleCase(c) == 'S') {
+                avi.move("down");
+            }
+            if (Character.toTitleCase(c) == 'D') {
+                avi.move("right");
+            }
+        }
         return world.returnWorldArr();
     }
+
 
     public static void main(String[] args) {
 
