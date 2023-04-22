@@ -5,7 +5,6 @@ import byow.Core.Inputs.Inputs;
 import byow.Core.Inputs.KeyboardInputs;
 import byow.Core.Inputs.StringInputs;
 import byow.Core.Inputs.UserInterface;
-import byow.Core.Rooms.Room;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import edu.princeton.cs.algs4.In;
@@ -34,72 +33,93 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-        String seedStr;
-        String inputTracker;
-        String[] loadDimensions = new String[3];
-        boolean loaded = false;
 
         Inputs inputDev = new KeyboardInputs();
-        UI = new UserInterface(WIDTH, HEIGHT);
 
+        //necessary variables to create the saveFile
+        String seedStr;
+        String[] loadScript = new String[3];
+        boolean loaded = false;
+
+        //create UI
+        UI = new UserInterface(WIDTH, HEIGHT);
         UI.startScreen();
+
+        //loop until one of the conditions breaks the loop
         while (true) {
+            //get the next input
             char c = inputDev.getNextKey();
+
+            //if the input is N, switch to the UI for seed prompting and get the seed (saved in seedStr)
             if (Character.toTitleCase(c) == 'N') {
                 UI.seedPrompt("");
                 seedStr = solicitSeed(inputDev, true);
                 break;
             }
+
+            //if the input is L, load previous save if it exists
             if (Character.toTitleCase(c) == 'L') {
+                //check that the saveFile returns a non-empty String (any error is caught by readFile and returned as "")
                 if (!readFile(saveFile).equals("")) {
-                    String savedInput = readFile(saveFile);
-                    loadDimensions = savedInput.split(",");
-                    seedStr = loadDimensions[0];
+                    //load script has three elements: 1 - seed, 2 - x coordinate of avatar, 3 - y coordinate of avatar
+                    loadScript = readFile(saveFile).split(",");
+                    seedStr = loadScript[0];
+
+                    //set loaded = true so that we can update the avatar's location later
                     loaded = true;
                     break;
                 }
             }
+            //quit method
             if (Character.toTitleCase(c) == 'Q') {
                 System.exit(0);
             }
         }
 
-        long seedNum = Long.valueOf(seedStr);
-
-        Random seed = new Random(seedNum);
-
+        //convert string seed to Random
+        Random seed = new Random(Long.valueOf(seedStr));
         World world = new World(seed, WIDTH, HEIGHT);
         ter.renderFrame(world.returnWorldArr());
 
+        //find random coordinates for avatar if no load, if load set coordinates to saved coordinates
         ArrayList<Integer> coordinates = world.randomRoom().randomFloor();
-
         int x = coordinates.get(0);
         int y = coordinates.get(1);
         if (loaded) {
-            x = Integer.valueOf(loadDimensions[1]);
-            y = Integer.valueOf(loadDimensions[2]);
+            x = Integer.valueOf(loadScript[1]);
+            y = Integer.valueOf(loadScript[2]);
         }
 
-        Avatar avi = new Avatar(x, y, world, ter);
+        //add avatar to the world
+        Avatar avi = new Avatar(x, y, world);
+        ter.renderFrame(world.returnWorldArr());
 
+        //checks if previous key pressed was a colon
         boolean colonPress = false;
 
+        //while we don't quit with :Q, game keeps running
         while(true) {
             char c = inputDev.getNextKey();
+
+            //use helper to move avatar accordingly
             solicitMovements(avi, c);
             ter.renderFrame(world.returnWorldArr());
 
+            //if we get a colon we set colonPress to true and check the next input
             if (Character.toTitleCase(c) == ':') {
                 colonPress = true;
                 continue;
             }
+
+            //if previous input was colon, and this input is Q, save the current seed and avatar location and quit
             if (colonPress && Character.toTitleCase(c) == 'Q') {
                 String currX = Integer.toString(avi.getCoordinates()[0]);
                 String currY = Integer.toString(avi.getCoordinates()[1]);
-                inputTracker = seedStr + "," + currX + "," + currY;
+                String inputTracker = seedStr + "," + currX + "," + currY;
                 saveFile = writeSaveFile(inputTracker);
                 System.exit(0);
             }
+            //reset colonPress after every loop except if colon has just been pressed (continue skips this)
             colonPress = false;
         }
     }
@@ -133,37 +153,43 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        String seedStr = "";
-        String inputTracker = "";
         Inputs inputDev = new StringInputs(input);
+
+        String[] loadScript = new String[3];
+        boolean loaded = false;
+        String seedStr;
 
         //retrieve seed from user input
         while (true) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
                 seedStr = solicitSeed(inputDev, false);
-
-                //update input tracker after seed is solicited
-                inputTracker += seedStr;
-                inputTracker += 'S';
                 break;
             }
-            if (Character.isDigit(c)) {
-                seedStr += c;
+            if (Character.toTitleCase(c) == 'L') {
+                if (!readFile(saveFile).equals("")) {
+                    loadScript = readFile(saveFile).split(",");
+                    seedStr = loadScript[0];
+                    loaded = true;
+                    break;
+                }
             }
         }
-        //initialize world based on seed
-        Long seedNum = Long.valueOf(seedStr);
-        Random seed = new Random(seedNum);
-
+        Random seed = new Random(Long.valueOf(seedStr));
         World world = new World(seed, WIDTH, HEIGHT);
 
         ArrayList<Integer> coordinates = world.randomRoom().randomFloor();
         int x = coordinates.get(0);
         int y = coordinates.get(1);
-        Avatar avi = new Avatar(x, y, world, ter);
+        if (loaded) {
+            x = Integer.valueOf(loadScript[1]);
+            y = Integer.valueOf(loadScript[2]);
+        }
+
+        Avatar avi = new Avatar(x, y, world);
 
         boolean colonPress = false;
+
         while(inputDev.possibleNextInput()) {
             char c = inputDev.getNextKey();
             solicitMovements(avi, c);
@@ -173,6 +199,10 @@ public class Engine {
                 continue;
             }
             if (colonPress && Character.toTitleCase(c) == 'Q') {
+                String currX = Integer.toString(avi.getCoordinates()[0]);
+                String currY = Integer.toString(avi.getCoordinates()[1]);
+                String inputTracker = seedStr + "," + currX + "," + currY;
+                saveFile = writeSaveFile(inputTracker);
                 System.exit(0);
             }
             colonPress = false;
@@ -195,11 +225,6 @@ public class Engine {
             }
         }
     }
-
-    private void createRandomAvatar() {
-
-    }
-
 
     private void solicitMovements(Avatar avi, char c) {
         if (Character.toTitleCase(c) == 'W') {
