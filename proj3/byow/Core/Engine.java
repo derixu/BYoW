@@ -145,6 +145,9 @@ public class Engine {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
+
+    //Same as previous essentially, except the final while loop does not go on infinitely (goes on until string ends)
+    //and there is no UI or graphical element so no interactivity
     public TETile[][] interactWithInputString(String input) {
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
