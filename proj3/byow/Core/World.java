@@ -16,7 +16,7 @@ public class World {
     private int width;
     private int height;
     private Random seed;
-    public World(long seedNum, int width, int height) {
+    public World(Random seed, int width, int height) {
 
         this.width = width;
         this.height = height;
@@ -30,7 +30,7 @@ public class World {
         }
 
         //decide seed
-        seed = new Random(seedNum);
+        this.seed = seed;
 
 
         //parameterize the world (important part is setting numRooms to an integer, process is adaptable
@@ -55,7 +55,7 @@ public class World {
             double y = Double.valueOf(rooms.get(i).getWalls().get(0).get(1));
 
             //initialize closest to an arbitrary room with max distance
-            Room closest = new RectangleRoom(0, 0, 0, 0);
+            Room closest = new RectangleRoom(seed, 0, 0, 0, 0);
             double distance = Double.MAX_VALUE;
 
             for (Room possible : mutableRooms) {
@@ -84,7 +84,7 @@ public class World {
 
             int x = RandomUtils.uniform(seed, 0,  width - roomWidth);
             int y = RandomUtils.uniform(seed, 0,  height - roomHeight);
-            RectangleRoom room = new RectangleRoom(x, y, roomWidth, roomHeight);
+            RectangleRoom room = new RectangleRoom(seed, x, y, roomWidth, roomHeight);
 
             //if room overlaps with any previous rooms in the world, redo parameterization and initialization
             int tries = 0;
@@ -94,7 +94,7 @@ public class World {
                 }
                 x = RandomUtils.uniform(seed, 0,  width - roomWidth);
                 y = RandomUtils.uniform(seed, 0,  height - roomHeight);
-                room = new RectangleRoom(x, y, roomWidth, roomHeight);
+                room = new RectangleRoom(seed, x, y, roomWidth, roomHeight);
                 tries++;
             }
 
@@ -119,16 +119,12 @@ public class World {
 
     private void hallwayHelper(Room r1, Room r2) {
 
-        //randomly choose an index to retrieve a random floor tile from the floors of each room
-        int index1 = RandomUtils.uniform(seed, 0, r1.getFloors().size());
-        int index2 = RandomUtils.uniform(seed, 0, r2.getFloors().size());
-
         //get coordinates of each room (random floor coordinate)
-        int x1 = r1.getFloors().get(index1).get(0);
-        int y1 = r1.getFloors().get(index1).get(1);
+        int x1 = r1.randomFloor().get(0);
+        int y1 = r1.randomFloor().get(1);
 
-        int x2 = r2.getFloors().get(index2).get(0);
-        int y2 = r2.getFloors().get(index2).get(1);
+        int x2 = r2.randomFloor().get(0);
+        int y2 = r2.randomFloor().get(1);
 
         //create a path from coordinate 1 to 2 starting with x, as we step through the tiles, we change the tiles to floors
 
@@ -195,12 +191,17 @@ public class World {
         worldArray[x][y] = tile;
     }
 
+    public Room randomRoom() {
+        int roomIndex = RandomUtils.uniform(seed, 0, rooms.size());
+        return rooms.get(roomIndex);
+    }
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(80, 30);
 
 
-        World world = new World(8764478, 80, 30);
+        World world = new World(new Random(8764478), 80, 30);
         TETile[][] worldArr = world.returnWorldArr();
 
         ter.renderFrame(worldArr);

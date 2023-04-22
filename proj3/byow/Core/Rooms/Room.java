@@ -11,4 +11,6 @@ public interface Room {
 
     public Boolean overlap(ArrayList<Room> rooms);
 
+    public ArrayList<Integer> randomFloor();
+
 }

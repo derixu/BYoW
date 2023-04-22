@@ -1,15 +1,23 @@
 package byow.Core.Rooms;
 
+import byow.Core.RandomUtils;
+import byow.TileEngine.TETile;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class RectangleRoom implements Room {
     private ArrayList<ArrayList<Integer>> walls; //coordinates of all wall tiles
     private ArrayList<ArrayList<Integer>> floors; //coordinates of all floor tiles
-    public RectangleRoom(int x, int y, int width, int height) {
+
+    private Random seed;
+
+    public RectangleRoom(Random seed, int x, int y, int width, int height) {
         // (x, y) coordinates of bottom left corner
         walls = new ArrayList<>();
         floors = new ArrayList<>();
+        this.seed = seed;
 
         //iterate through all coordinates of tiles covered by the room
         for (int currX = x; currX < x + width; currX++) {
@@ -56,5 +64,10 @@ public class RectangleRoom implements Room {
             }
         }
         return false;
+    }
+
+    public ArrayList<Integer> randomFloor() {
+        int tileIndex = RandomUtils.uniform(seed, 0, floors.size());
+        return floors.get(tileIndex);
     }
 }

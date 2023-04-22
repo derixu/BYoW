@@ -19,22 +19,11 @@ public class Avatar {
     TETile avatar = Tileset.AVATAR;
     World world;
     TERenderer ter;
-    public Avatar(Long seedNum, World world, TERenderer ter) {
-        seed = new Random(seedNum);
+    public Avatar(int x, int y, World world, TERenderer ter) {
+        this.x = x;
+        this.y = y;
         this.world = world;
         this.ter = ter;
-
-        //find starting room
-        ArrayList<Room> rooms = world.returnRooms();
-        int roomIndex = RandomUtils.uniform(seed, 0, rooms.size());
-        Room startRoom  = rooms.get(roomIndex);
-
-        //find starting tile
-        int tileIndex = RandomUtils.uniform(seed, 0, startRoom.getFloors().size());
-        ArrayList<Integer> coordinates = startRoom.getFloors().get(tileIndex);
-
-        x = coordinates.get(0);
-        y = coordinates.get(1);
 
         this.world.alterTiles(x, y, avatar);
         ter.renderFrame(world.returnWorldArr());
@@ -57,4 +46,14 @@ public class Avatar {
             y = nextY;
         }
     }
+
+    public void moveDirect(int newX, int newY) {
+        world.alterTiles(x, y, Tileset.GRASS);
+        world.alterTiles(newX, newY, avatar);
+    }
+
+    public int[] getCoordinates() {
+        return new int[]{x, y};
+    }
+
 }

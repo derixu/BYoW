@@ -1,17 +1,30 @@
 package byow.Core;
 
 import byow.Core.Inputs.Avatar.Avatar;
+import byow.Core.Inputs.Inputs;
 import byow.Core.Inputs.KeyboardInputs;
 import byow.Core.Inputs.StringInputs;
 import byow.Core.Inputs.UserInterface;
+import byow.Core.Rooms.Room;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Engine {
     TERenderer ter = new TERenderer();
+    UserInterface UI;
+    File saveFile  = new File("saveFile.txt");
+
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
@@ -21,37 +34,54 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-        String seed = "";
-        Boolean worldStarted = false;
-        Boolean seedFinished = false;
-        KeyboardInputs inputDev = new KeyboardInputs();
-        UserInterface UI = new UserInterface(WIDTH, HEIGHT);
+        String seedStr;
+        String inputTracker;
+        String[] loadDimensions = new String[3];
+        boolean loaded = false;
+
+        Inputs inputDev = new KeyboardInputs();
+        UI = new UserInterface(WIDTH, HEIGHT);
 
         UI.startScreen();
-
-        while (!seedFinished) {
+        while (true) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
-                worldStarted = true;
-                UI.seedPrompt(seed);
+                UI.seedPrompt("");
+                seedStr = solicitSeed(inputDev, true);
+                break;
             }
-            if (worldStarted && Character.isDigit(c)) {
-                seed += c;
-                UI.seedPrompt(seed);
-            }
-            if (worldStarted && Character.toTitleCase(c) == 'S' && !seed.isEmpty()) {
-                seedFinished = true;
+            if (Character.toTitleCase(c) == 'L') {
+                if (!readFile(saveFile).equals("")) {
+                    String savedInput = readFile(saveFile);
+                    loadDimensions = savedInput.split(",");
+                    seedStr = loadDimensions[0];
+                    loaded = true;
+                    break;
+                }
             }
             if (Character.toTitleCase(c) == 'Q') {
                 System.exit(0);
             }
         }
 
-        Long seedNum = Long.valueOf(seed);
-        World world = new World(seedNum, WIDTH, HEIGHT);
+        long seedNum = Long.valueOf(seedStr);
+
+        Random seed = new Random(seedNum);
+
+        World world = new World(seed, WIDTH, HEIGHT);
         ter.renderFrame(world.returnWorldArr());
 
-        Avatar avi = new Avatar(seedNum, world, ter);
+        ArrayList<Integer> coordinates = world.randomRoom().randomFloor();
+
+        int x = coordinates.get(0);
+        int y = coordinates.get(1);
+        if (loaded) {
+            x = Integer.valueOf(loadDimensions[1]);
+            y = Integer.valueOf(loadDimensions[2]);
+        }
+
+        Avatar avi = new Avatar(x, y, world, ter);
+
         boolean colonPress = false;
 
         while(true) {
@@ -64,11 +94,14 @@ public class Engine {
                 continue;
             }
             if (colonPress && Character.toTitleCase(c) == 'Q') {
+                String currX = Integer.toString(avi.getCoordinates()[0]);
+                String currY = Integer.toString(avi.getCoordinates()[1]);
+                inputTracker = seedStr + "," + currX + "," + currY;
+                saveFile = writeSaveFile(inputTracker);
                 System.exit(0);
             }
             colonPress = false;
         }
-
     }
 
     /**
@@ -100,28 +133,35 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        String seed = "";
-        Boolean worldStarted = false;
-        Boolean seedFinished = false;
-        StringInputs inputDev = new StringInputs(input);
+        String seedStr = "";
+        String inputTracker = "";
+        Inputs inputDev = new StringInputs(input);
 
         //retrieve seed from user input
-        while (inputDev.possibleNextInput() && !seedFinished) {
+        while (true) {
             char c = inputDev.getNextKey();
             if (Character.toTitleCase(c) == 'N') {
-                worldStarted = true;
+                seedStr = solicitSeed(inputDev, false);
+
+                //update input tracker after seed is solicited
+                inputTracker += seedStr;
+                inputTracker += 'S';
+                break;
             }
-            if (worldStarted && Character.isDigit(c)) {
-                seed += c;
-            }
-            if (worldStarted && Character.toTitleCase(c) == 'S') {
-                seedFinished = true;
+            if (Character.isDigit(c)) {
+                seedStr += c;
             }
         }
         //initialize world based on seed
-        Long seedNum = Long.valueOf(seed);
-        World world = new World(seedNum, WIDTH, HEIGHT);
-        Avatar avi = new Avatar(seedNum, world, ter);
+        Long seedNum = Long.valueOf(seedStr);
+        Random seed = new Random(seedNum);
+
+        World world = new World(seed, WIDTH, HEIGHT);
+
+        ArrayList<Integer> coordinates = world.randomRoom().randomFloor();
+        int x = coordinates.get(0);
+        int y = coordinates.get(1);
+        Avatar avi = new Avatar(x, y, world, ter);
 
         boolean colonPress = false;
         while(inputDev.possibleNextInput()) {
@@ -140,6 +180,27 @@ public class Engine {
         return world.returnWorldArr();
     }
 
+    private String solicitSeed(Inputs inputDev, boolean interactive) {
+        String seed = "";
+        while (true) {
+            char c = inputDev.getNextKey();
+            if (Character.isDigit(c)) {
+                seed += c;
+                if (interactive) {
+                    UI.seedPrompt(seed);
+                }
+            }
+            if (Character.toTitleCase(c) == 'S' && !seed.isEmpty()) {
+                return seed;
+            }
+        }
+    }
+
+    private void createRandomAvatar() {
+
+    }
+
+
     private void solicitMovements(Avatar avi, char c) {
         if (Character.toTitleCase(c) == 'W') {
             avi.move("up");
@@ -152,6 +213,36 @@ public class Engine {
         }
         if (Character.toTitleCase(c) == 'D') {
             avi.move("right");
+        }
+    }
+
+    private File writeSaveFile(String input) {
+        try {
+            FileWriter myWriter = new FileWriter("saveFile.txt");
+
+            saveFile.createNewFile();
+            myWriter.write(input);
+            myWriter.close();
+            return saveFile;
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String readFile(File saveFile) {
+        try {
+            Scanner myReader = new Scanner(saveFile);
+            String data = "";
+            while (myReader.hasNextLine()) {
+                data += myReader.nextLine();
+            }
+            myReader.close();
+            return data;
+        } catch (FileNotFoundException e) {
+            return "";
         }
     }
 
