@@ -21,6 +21,25 @@ public class TERenderer {
 
     private UserInterface UI;
 
+
+    public void initialize(int w, int h, int xOff, int yOff, UserInterface UI) {
+        this.width = w;
+        this.height = h;
+        this.xOffset = xOff;
+        this.yOffset = yOff;
+        this.UI = UI;
+        StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
+        Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
+        StdDraw.setFont(font);
+        StdDraw.setXscale(0, width);
+        StdDraw.setYscale(0, height);
+
+        StdDraw.clear(new Color(0, 0, 0));
+
+        StdDraw.enableDoubleBuffering();
+        StdDraw.show();
+    }
+
     /**
      * Same functionality as the other initialization method. The only difference is that the xOff
      * and yOff parameters will change where the renderFrame method starts drawing. For example,
@@ -30,12 +49,11 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h, int xOff, int yOff, UserInterface UI) {
+    public void initialize(int w, int h, int xOff, int yOff) {
         this.width = w;
         this.height = h;
         this.xOffset = xOff;
         this.yOffset = yOff;
-        this.UI = UI;
         StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
         StdDraw.setFont(font);      
@@ -62,7 +80,7 @@ public class TERenderer {
      * @param h height of the window in tiles.
      */
     public void initialize(int w, int h) {
-        initialize(w, h, 0, 0, new UserInterface(w, h));
+        initialize(w, h, 0, 0);
     }
 
     /**
@@ -104,5 +122,4 @@ public class TERenderer {
         UI.drawHUD();
         StdDraw.show();
     }
-
 }

@@ -5,6 +5,7 @@ import byow.Core.Inputs.Inputs;
 import byow.Core.Inputs.KeyboardInputs;
 import byow.Core.Inputs.StringInputs;
 import byow.Core.Inputs.UserInterface;
+import byow.Core.Rooms.LightSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -16,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -163,7 +165,7 @@ public class Engine {
         }
 
         //add avatar to the world
-        avi = new Avatar(x, y, world);
+        avi = new Avatar(x, y, world.getTile(x, y), world);
         if (interactive) {
             ter.renderFrame(world.returnWorldArr());
         }
@@ -180,7 +182,7 @@ public class Engine {
             double mouseY = StdDraw.mouseY();
             char c;
 
-            String tileType = mouseHelper(mouseX, mouseY);
+            String tileType = mouseHelper(mouseX, mouseY, StdDraw.isMousePressed());
 
             UI.setPointerTile(tileType);
             ter.renderFrame(world.returnWorldArr());
@@ -188,6 +190,7 @@ public class Engine {
             if (StdDraw.hasNextKeyTyped()) {
                 c = inputDev.getNextKey();
                 solicitMovements(c);
+
                 ter.renderFrame(world.returnWorldArr());
 
                 //if we get a colon we set colonPress to true and check the next input
@@ -295,10 +298,15 @@ public class Engine {
         }
     }
 
+<<<<<<< HEAD
     public String mouseHelper(double mouseX, double mouseY) {
 
+=======
+    public String mouseHelper(double mouseX, double mouseY, boolean press) {
+>>>>>>> 8d4ca142e7620ceeab03beabad191d288716a0c3
         int x = (int) Math.round(Math.floor(mouseX));
         int y = (int) Math.round(Math.floor(mouseY));
+        String coordinate = String.valueOf(x - XSHIFT) + "," + String.valueOf(y - YSHIFT);
 
         String type = "";
         TETile tile = Tileset.NOTHING;
@@ -308,18 +316,14 @@ public class Engine {
             tile = world.returnWorldArr()[x - XSHIFT][y - YSHIFT];
         }
 
-        if (tile == Tileset.WALL) {
-            type = "Wall";
+        if (tile == Tileset.LIGHT && press) {
+            LightSource light = world.getLights().get(coordinate);
+            light.toggleLight(avi);
+            StdDraw.show();
+            StdDraw.pause(125);
         }
 
-        if (tile == Tileset.GRASS) {
-            type = "Floor";
-        }
-
-        if (tile == Tileset.NOTHING) {
-            type = "Space";
-        }
-        return type;
+        return tile.description();
     }
 
     public static void main(String[] args) {

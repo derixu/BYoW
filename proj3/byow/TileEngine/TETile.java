@@ -135,6 +135,26 @@ public class TETile {
         return new TETile(t, c);
     }
 
+    public static TETile gradientVariant(TETile t, int dr, int dg, int db) {
+        Color oldColor = t.backgroundColor;
+        int newRed = Math.max(oldColor.getRed() + dr, 0);
+        int newGreen = Math.max(oldColor.getGreen() + dg, 0);
+        int newBlue = Math.max(oldColor.getBlue() + db, 0);
+
+        Color c = new Color(newRed, newGreen, newBlue);
+
+        return changeBackground(t, c);
+    }
+
+    public static TETile changeBackground(TETile t, Color c) {
+        return new TETile(t.character, t.textColor, c, t.description, t.filepath);
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+
     private static int newColorValue(int v, int dv, Random r) {
         int rawNewValue = v + RandomUtils.uniform(r, -dv, dv + 1);
 
