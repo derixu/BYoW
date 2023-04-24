@@ -307,7 +307,7 @@ public class Engine {
             LightSource light = world.getLights().get(coordinate);
             light.toggleLight(avi);
             StdDraw.show();
-            StdDraw.pause(125);
+            StdDraw.pause(180);
         }
 
         return tile.description();

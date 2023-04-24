@@ -10,7 +10,7 @@ public class Avatar {
     int x;
     int y;
     TETile currTile;
-    TETile avatar = Tileset.AVATAR;
+    TETile avatar = Tileset.LINKDOWN;
     World world;
     public Avatar(int x, int y, TETile currTile, World world) {
         //initialize coordinates and world
@@ -30,13 +30,35 @@ public class Avatar {
         int nextX = x;
         int nextY = y;
 
-        //check for direction and depending on case alter the next position
-        switch (direction) {
-            case "up" -> nextY++;
-            case "down" -> nextY--;
-            case "right" -> nextX++;
-            case "left" -> nextX--;
+        if (direction == "up") {
+            nextY++;
+            avatar = Tileset.LINKUP;
         }
+
+        if (direction == "down") {
+            nextY--;
+            avatar = Tileset.LINKDOWN;
+        }
+
+        if (direction == "left") {
+            nextX--;
+            avatar = Tileset.LINKLEFT;
+        }
+
+        if (direction == "right") {
+            nextX++;
+            avatar = Tileset.LINKRIGHT;
+        }
+
+
+//        //check for direction and depending on case alter the next position
+//        switch (direction) {
+//            case "up" -> nextY++;
+//            case "down" -> nextY--;
+//            case "right" -> nextX++;
+//            case "left" -> nextX--;
+//        }
+        
         //if the next tile is not a wall, we can move and update the current position
         if (world.getTile(nextX, nextY) != Tileset.WALL) {
             world.alterTiles(x, y, currTile);

@@ -1,6 +1,8 @@
 package byow.TileEngine;
 
 import java.awt.Color;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Contains constant tile objects, to avoid having to remake the same tiles in different parts of
@@ -17,12 +19,20 @@ import java.awt.Color;
  */
 
 public class Tileset {
-    public static final TETile AVATAR = new TETile('@', Color.white, Color.black, "you");
+    public static final TETile AVATAR = new TETile('@', Color.white, Color.black, "You");
+
+    public static final TETile LINKRIGHT = new TETile('@', Color.white, Color.black, "Link", "LinkRight.png");
+    public static final TETile LINKLEFT = new TETile('@', Color.white, Color.black, "Link", "LinkLeft.png");
+    public static final TETile LINKUP = new TETile('@', Color.white, Color.black, "Link", "LinkBack.png");
+    public static final TETile LINKDOWN = new TETile('@', Color.white, Color.black, "Link", "LinkFront.png");
+
+
+
     public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray,
-            "wall");
+            "Wall", "WallAssets.png");
     public static final TETile FLOOR = new TETile('·', new Color(128, 192, 128), new Color(40, 10, 10),
-            "floor");
-    public static final TETile NOTHING = new TETile(' ', Color.black, Color.black, "nothing");
+            "Floor");
+    public static final TETile NOTHING = new TETile(' ', Color.black, Color.black, "Darkness");
     public static final TETile GRASS = new TETile('"', Color.green, Color.black, "grass");
     public static final TETile WATER = new TETile('≈', Color.blue, Color.black, "water");
     public static final TETile FLOWER = new TETile('❀', Color.magenta, Color.pink, "flower");
@@ -33,8 +43,7 @@ public class Tileset {
     public static final TETile SAND = new TETile('▒', Color.yellow, Color.black, "sand");
     public static final TETile MOUNTAIN = new TETile('▲', Color.gray, Color.black, "mountain");
     public static final TETile TREE = new TETile('♠', Color.green, Color.black, "tree");
-    public static final TETile LIGHT = new TETile('+', new Color(255, 248, 235), new Color(255, 68, 0), "light");
-
+    public static final TETile LIGHT = new TETile('+', new Color(255, 248, 235), new Color(255, 68, 0), "Light");
 }
 
 
