@@ -58,7 +58,7 @@ public class Avatar {
 //            case "right" -> nextX++;
 //            case "left" -> nextX--;
 //        }
-        
+
         //if the next tile is not a wall, we can move and update the current position
         if (world.getTile(nextX, nextY) != Tileset.WALL) {
             world.alterTiles(x, y, currTile);

@@ -17,13 +17,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-//imports for date and time display:
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Engine {
 
@@ -46,6 +42,8 @@ public class Engine {
     public static final int XSHIFT = 1;
     public static final int YSHIFT = 1;
     public static final int HUDHEIGHT = 3;
+    public static final int BUFFER = 180;
+
 
 
     /**
@@ -298,12 +296,7 @@ public class Engine {
         }
     }
 
-<<<<<<< HEAD
-    public String mouseHelper(double mouseX, double mouseY) {
-
-=======
     public String mouseHelper(double mouseX, double mouseY, boolean press) {
->>>>>>> 8d4ca142e7620ceeab03beabad191d288716a0c3
         int x = (int) Math.round(Math.floor(mouseX));
         int y = (int) Math.round(Math.floor(mouseY));
         String coordinate = String.valueOf(x - XSHIFT) + "," + String.valueOf(y - YSHIFT);
@@ -316,11 +309,11 @@ public class Engine {
             tile = world.returnWorldArr()[x - XSHIFT][y - YSHIFT];
         }
 
-        if (tile == Tileset.LIGHT && press) {
+        if (tile == Tileset.LIGHT && press || tile == Tileset.LOGS && press) {
             LightSource light = world.getLights().get(coordinate);
             light.toggleLight(avi);
             StdDraw.show();
-            StdDraw.pause(180);
+            StdDraw.pause(BUFFER);
         }
 
         return tile.description();

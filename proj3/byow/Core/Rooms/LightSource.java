@@ -76,6 +76,7 @@ public class LightSource {
 
     public void toggleLight(Avatar avi) {
         if (on) {
+            world.alterTiles(light.get(0), light.get(1), Tileset.LOGS);
             for (Integer[] coordinate : affected.keySet()) {
                 if (coordinate[0] == avi.getCoordinates()[0] && coordinate[1] == avi.getCoordinates()[1]) {
                     avi.updateHiddenFloor(Tileset.FLOOR);
@@ -88,6 +89,7 @@ public class LightSource {
             on = false;
         }
         else {
+            world.alterTiles(light.get(0), light.get(1), Tileset.LIGHT);
             for (Integer[] coordinate : affected.keySet()) {
                 if (coordinate[0] == avi.getCoordinates()[0] && coordinate[1] == avi.getCoordinates()[1]) {
                     avi.updateHiddenFloor(affected.get(coordinate));

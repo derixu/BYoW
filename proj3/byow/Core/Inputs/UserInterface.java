@@ -77,7 +77,7 @@ public class UserInterface {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
-        StdDraw.textLeft(10, height, "Date and time:" + now.format(dtf));
+        StdDraw.textLeft(15, height, "Date and time:" + now.format(dtf));
 
         StdDraw.show();
     }
