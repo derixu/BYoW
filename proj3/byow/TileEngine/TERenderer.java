@@ -1,5 +1,6 @@
 package byow.TileEngine;
 
+import byow.Core.Inputs.UserInterface;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Color;
@@ -18,6 +19,8 @@ public class TERenderer {
     private int xOffset;
     private int yOffset;
 
+    private UserInterface UI;
+
     /**
      * Same functionality as the other initialization method. The only difference is that the xOff
      * and yOff parameters will change where the renderFrame method starts drawing. For example,
@@ -27,11 +30,12 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h, int xOff, int yOff) {
+    public void initialize(int w, int h, int xOff, int yOff, UserInterface UI) {
         this.width = w;
         this.height = h;
         this.xOffset = xOff;
         this.yOffset = yOff;
+        this.UI = UI;
         StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
         StdDraw.setFont(font);      
@@ -58,7 +62,7 @@ public class TERenderer {
      * @param h height of the window in tiles.
      */
     public void initialize(int w, int h) {
-        initialize(w, h, 0, 0);
+        initialize(w, h, 0, 0, new UserInterface(w, h));
     }
 
     /**
@@ -87,6 +91,7 @@ public class TERenderer {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
+
         for (int x = 0; x < numXTiles; x += 1) {
             for (int y = 0; y < numYTiles; y += 1) {
                 if (world[x][y] == null) {
@@ -96,6 +101,8 @@ public class TERenderer {
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
         }
+        UI.drawHUD();
         StdDraw.show();
     }
+
 }

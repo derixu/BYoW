@@ -7,6 +7,7 @@ import byow.Core.Inputs.StringInputs;
 import byow.Core.Inputs.UserInterface;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -28,6 +29,11 @@ public class Engine {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
 
+    public static final int XSHIFT = 1;
+    public static final int YSHIFT = 1;
+
+    public static final int HUDHEIGHT = 3;
+
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -42,7 +48,7 @@ public class Engine {
         boolean loaded = false;
 
         //create UI
-        UI = new UserInterface(WIDTH, HEIGHT);
+        UI = new UserInterface(WIDTH+2, HEIGHT+4);
         UI.startScreen();
 
         //loop until one of the conditions breaks the loop
@@ -79,6 +85,9 @@ public class Engine {
         //convert string seed to Random
         Random seed = new Random(Long.valueOf(seedStr));
         World world = new World(seed, WIDTH, HEIGHT);
+
+        //add blank section to the top and make sure no walls touch the edge of the screen
+        ter.initialize(WIDTH + (XSHIFT * 2), HEIGHT + (YSHIFT * 2) + HUDHEIGHT, 1, 1, UI);
         ter.renderFrame(world.returnWorldArr());
 
         //find random coordinates for avatar if no load, if load set coordinates to saved coordinates
@@ -99,11 +108,21 @@ public class Engine {
 
         //while we don't quit with :Q, game keeps running
         while(true) {
-            char c = inputDev.getNextKey();
+            double mouseX = StdDraw.mouseX();
+            double mouseY = StdDraw.mouseY();
+            char c = 'z';
 
             //use helper to move avatar accordingly
-            solicitMovements(avi, c);
+            String tileType = mouseHelper(mouseX, mouseY, world);
+            UI.setPointerTile(tileType);
             ter.renderFrame(world.returnWorldArr());
+
+            if (StdDraw.hasNextKeyTyped()) {
+                c = inputDev.getNextKey();
+                solicitMovements(avi, c);
+                ter.renderFrame(world.returnWorldArr());
+            }
+
 
             //if we get a colon we set colonPress to true and check the next input
             if (Character.toTitleCase(c) == ':') {
@@ -272,6 +291,32 @@ public class Engine {
         } catch (FileNotFoundException e) {
             return "";
         }
+    }
+
+    public String mouseHelper(double mouseX, double mouseY, World world) {
+        int x = (int) Math.round(Math.floor(mouseX));
+        int y = (int) Math.round(Math.floor(mouseY));
+
+        String type = "";
+        TETile tile = Tileset.NOTHING;
+
+        //if the mouse is on the world, update the tile based on the pointer
+        if (x >= XSHIFT && x < world.getWidth() + XSHIFT && y >= YSHIFT && y < world.getHeight() + YSHIFT) {
+            tile = world.returnWorldArr()[x - XSHIFT][y - YSHIFT];
+        }
+
+        if (tile == Tileset.WALL) {
+            type = "Wall";
+        }
+
+        if (tile == Tileset.GRASS) {
+            type = "Floor";
+        }
+
+        if (tile == Tileset.NOTHING) {
+            type = "Space";
+        }
+        return type;
     }
 
     public static void main(String[] args) {

@@ -196,6 +196,14 @@ public class World {
         return rooms.get(roomIndex);
     }
 
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(80, 30);

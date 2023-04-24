@@ -1,5 +1,8 @@
 package byow.Core.Inputs;
 
+import byow.Core.World;
+import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
@@ -7,6 +10,9 @@ import java.awt.*;
 public class UserInterface {
     private int height;
     private int width;
+
+    private String pointerTile = "";
+
     public UserInterface(int width, int height) {
         this.width = width;
         this.height = height;
@@ -47,8 +53,24 @@ public class UserInterface {
         StdDraw.setFont(fontMid);
 
         //draw seed prompt and the seed given so far
-        StdDraw.text(width/2, height * 1/2, "Enter Seed (Press S to complete)");
-        StdDraw.text(width/2, (height * 1/2) - 2, seed);
+        StdDraw.text(width / 2, height * 1 / 2, "Enter Seed (Press S to complete)");
+        StdDraw.text(width / 2, (height * 1 / 2) - 2, seed);
+
+        StdDraw.show();
+    }
+
+    public void setPointerTile(String tileType) {
+        pointerTile = tileType;
+    }
+
+    public void setHealth(int health) {
+    }
+
+    public void drawHUD() {
+        Font fontSmall = new Font("Monaco", Font.BOLD, 15);
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(2, height, pointerTile);
 
         StdDraw.show();
     }
