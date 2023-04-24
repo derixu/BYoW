@@ -1,11 +1,13 @@
 package byow.Core;
 
+import byow.Core.Rooms.LightSource;
 import byow.Core.Rooms.RectangleRoom;
 import byow.Core.Rooms.Room;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -73,6 +75,10 @@ public class World {
             mutableRooms.remove(rooms.get(i));
             hallwayHelper(rooms.get(i), closest);
         }
+
+        for (Room room : rooms) {
+            lightHelper(room);
+        }
     }
 
     private void roomHelper(int numRooms, int minLength, int maxLength) {
@@ -109,7 +115,7 @@ public class World {
 
             //add new room floors to world array with unique tile
             for (ArrayList<Integer> floorCoordinates : room.getFloors()) {
-                worldArray[floorCoordinates.get(0)][floorCoordinates.get(1)] = Tileset.GRASS;
+                worldArray[floorCoordinates.get(0)][floorCoordinates.get(1)] = Tileset.FLOOR;
             }
 
             //add room to set of rooms to prevent future overlaps
@@ -141,7 +147,7 @@ public class World {
 
         //if our start x is not equal to our end x, increment until we reach the end x value
         while (x1 != x2) {
-            worldArray[x1][y1] = Tileset.GRASS;
+            worldArray[x1][y1] = Tileset.FLOOR;
             //add adjacent walls if necessary
             addXAdjacents(x1, y1);
             x1 += xDirection;
@@ -154,11 +160,17 @@ public class World {
 
         //if our start y not equal to end y, increment until we reach our end y
         while (y1 != y2) {
-            worldArray[x1][y1] = Tileset.GRASS;
+            worldArray[x1][y1] = Tileset.FLOOR;
             //add adjacent walls if necessary
             addYAdjacents(x1, y1);
             y1 += yDirection;
         }
+    }
+
+    private void lightHelper(Room room) {
+        int x = room.randomFloor().get(0);
+        int y = room.randomFloor().get(1);
+        new LightSource(room, this, new Color(255, 80, 0));
     }
 
     private void addXAdjacents(int x, int y) {
@@ -188,7 +200,9 @@ public class World {
     }
 
     public void alterTiles(int x, int y, TETile tile) {
-        worldArray[x][y] = tile;
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            worldArray[x][y] = tile;
+        }
     }
 
     public Room randomRoom() {
@@ -202,6 +216,13 @@ public class World {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public TETile getTile(int x, int y) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return worldArray[x][y];
+        }
+        return null;
     }
 
     public static void main(String[] args) {

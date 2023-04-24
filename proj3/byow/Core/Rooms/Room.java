@@ -13,4 +13,10 @@ public interface Room {
 
     public ArrayList<Integer> randomFloor();
 
+    public int getHeight();
+
+    public int getWidth();
+
+    public boolean inRoom(int x, int y);
+
 }

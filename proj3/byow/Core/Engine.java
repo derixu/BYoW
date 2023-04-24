@@ -157,7 +157,7 @@ public class Engine {
         }
 
         //add avatar to the world
-        avi = new Avatar(x, y, world);
+        avi = new Avatar(x, y, world.getTile(x, y), world);
         if (interactive) {
             ter.renderFrame(world.returnWorldArr());
         }
@@ -299,18 +299,7 @@ public class Engine {
             tile = world.returnWorldArr()[x - XSHIFT][y - YSHIFT];
         }
 
-        if (tile == Tileset.WALL) {
-            type = "Wall";
-        }
-
-        if (tile == Tileset.GRASS) {
-            type = "Floor";
-        }
-
-        if (tile == Tileset.NOTHING) {
-            type = "Space";
-        }
-        return type;
+        return tile.description();
     }
 
     public static void main(String[] args) {
