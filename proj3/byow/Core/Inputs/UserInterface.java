@@ -6,6 +6,8 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UserInterface {
     private int height;
@@ -71,6 +73,11 @@ public class UserInterface {
         StdDraw.setPenColor(Color.WHITE);
         StdDraw.setFont(fontSmall);
         StdDraw.textLeft(2, height, "Tile: " + pointerTile);
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        StdDraw.textLeft(10, height, "Date and time:" + now.format(dtf));
 
         StdDraw.show();
     }
