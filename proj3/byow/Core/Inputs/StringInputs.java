@@ -1,6 +1,6 @@
 package byow.Core.Inputs;
 
-public class StringInputs {
+public class StringInputs implements Inputs {
     private String input;
     private int index;
 
