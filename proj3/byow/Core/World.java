@@ -6,14 +6,18 @@ import byow.Core.Rooms.Room;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.In;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class World {
     private TETile[][] worldArray;
     private ArrayList<Room> rooms = new ArrayList<>();
+    private HashMap<String, LightSource> lights = new HashMap<>();
 
     private int width;
     private int height;
@@ -168,9 +172,14 @@ public class World {
     }
 
     private void lightHelper(Room room) {
-        int x = room.randomFloor().get(0);
-        int y = room.randomFloor().get(1);
-        new LightSource(room, this, new Color(255, 80, 0));
+        LightSource light = new LightSource(room, this, new Color(255, 80, 0));
+        String coordinate = String.valueOf(light.returnX()) + ',' + String.valueOf(light.returnY());
+
+        lights.put(coordinate, light);
+    }
+
+    public HashMap<String, LightSource> getLights() {
+        return lights;
     }
 
     private void addXAdjacents(int x, int y) {

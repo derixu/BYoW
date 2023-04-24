@@ -12,7 +12,6 @@ public class Avatar {
     TETile currTile;
     TETile avatar = Tileset.AVATAR;
     World world;
-    TERenderer ter;
     public Avatar(int x, int y, TETile currTile, World world) {
         //initialize coordinates and world
         this.x = x;
@@ -51,14 +50,22 @@ public class Avatar {
         }
     }
 
-    private void backgroundHelper() {
+    public void backgroundHelper() {
         avatar = TETile.changeBackground(avatar, currTile.getBackgroundColor());
+    }
+
+    public void updateHiddenFloor(TETile tile) {
+        this.currTile = tile;
     }
 
     //possibly use to teleport if needed as a helper for any functions
     public void moveDirect(int newX, int newY) {
         world.alterTiles(x, y, Tileset.FLOOR);
         world.alterTiles(newX, newY, avatar);
+    }
+
+    public void updateAvatar() {
+        world.alterTiles(x, y, avatar);
     }
 
     public int[] getCoordinates() {
