@@ -70,7 +70,7 @@ public class UserInterface {
         Font fontSmall = new Font("Monaco", Font.BOLD, 15);
         StdDraw.setPenColor(Color.WHITE);
         StdDraw.setFont(fontSmall);
-        StdDraw.text(2, height, pointerTile);
+        StdDraw.textLeft(2, height, "Tile: " + pointerTile);
 
         StdDraw.show();
     }

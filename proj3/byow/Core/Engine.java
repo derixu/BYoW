@@ -171,9 +171,10 @@ public class Engine {
         while (true) {
             double mouseX = StdDraw.mouseX();
             double mouseY = StdDraw.mouseY();
-            char c = Character.MIN_VALUE;
+            char c;
 
             String tileType = mouseHelper(mouseX, mouseY);
+
             UI.setPointerTile(tileType);
             ter.renderFrame(world.returnWorldArr());
 
