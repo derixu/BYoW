@@ -110,7 +110,7 @@ public class Engine {
         while(true) {
             double mouseX = StdDraw.mouseX();
             double mouseY = StdDraw.mouseY();
-            char c = 'z';
+            char c = Character.MIN_VALUE;
 
             //use helper to move avatar accordingly
             String tileType = mouseHelper(mouseX, mouseY, world);
@@ -121,25 +121,23 @@ public class Engine {
                 c = inputDev.getNextKey();
                 solicitMovements(avi, c);
                 ter.renderFrame(world.returnWorldArr());
-            }
 
+                //if we get a colon we set colonPress to true and check the next input
+                if (Character.toTitleCase(c) == ':') {
+                    colonPress = true;
+                    continue;
+                }
 
-            //if we get a colon we set colonPress to true and check the next input
-            if (Character.toTitleCase(c) == ':') {
-                colonPress = true;
-                continue;
+                //if previous input was colon, and this input is Q, save the current seed and avatar location and quit
+                if (colonPress && Character.toTitleCase(c) == 'Q') {
+                    String currX = Integer.toString(avi.getCoordinates()[0]);
+                    String currY = Integer.toString(avi.getCoordinates()[1]);
+                    String inputTracker = seedStr + "," + currX + "," + currY;
+                    saveFile = writeSaveFile(inputTracker);
+                    System.exit(0);
+                }
+                colonPress = false;
             }
-
-            //if previous input was colon, and this input is Q, save the current seed and avatar location and quit
-            if (colonPress && Character.toTitleCase(c) == 'Q') {
-                String currX = Integer.toString(avi.getCoordinates()[0]);
-                String currY = Integer.toString(avi.getCoordinates()[1]);
-                String inputTracker = seedStr + "," + currX + "," + currY;
-                saveFile = writeSaveFile(inputTracker);
-                System.exit(0);
-            }
-            //reset colonPress after every loop except if colon has just been pressed (continue skips this)
-            colonPress = false;
         }
     }
 
@@ -321,11 +319,24 @@ public class Engine {
 
     public static void main(String[] args) {
 
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+        String type = "Str";
 
-        Engine engine = new Engine();
-        engine.interactWithKeyboard();
+        if (type.equals("Str")) {
+            Engine engine = new Engine();
+            TETile[][] World = engine.interactWithInputString("n123sssww");
+
+            TERenderer ter = new TERenderer();
+            ter.initialize(WIDTH, HEIGHT);
+            ter.renderFrame(World);
+        }
+
+        if (type == "Key") {
+            TERenderer ter = new TERenderer();
+            ter.initialize(WIDTH, HEIGHT);
+
+            Engine engine = new Engine();
+            engine.interactWithKeyboard();
+        }
     }
 
 }
