@@ -21,6 +21,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
+//imports for date and time display:
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Engine {
 
     //Game Engines
@@ -43,6 +47,7 @@ public class Engine {
     public static final int YSHIFT = 1;
     public static final int HUDHEIGHT = 3;
 
+
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -53,6 +58,7 @@ public class Engine {
         titleHandler(true);
         worldGenerator(true);
         interactiveGameEngine();
+
     }
 
     /**
@@ -92,6 +98,7 @@ public class Engine {
         titleHandler(false);
         worldGenerator(false);
         return stringGameEngine();
+
     }
 
     private void titleHandler(boolean interactive) {
@@ -134,7 +141,6 @@ public class Engine {
                 System.exit(0);
             }
         }
-
     }
 
     private void worldGenerator(boolean interactive) {
@@ -163,6 +169,7 @@ public class Engine {
         if (interactive) {
             ter.renderFrame(world.returnWorldArr());
         }
+        
     }
 
     private void interactiveGameEngine() {
@@ -206,6 +213,7 @@ public class Engine {
     }
 
     private TETile[][] stringGameEngine() {
+
         boolean colonPress = false;
 
         while (inputDev.possibleNextInput()) {
@@ -290,7 +298,12 @@ public class Engine {
         }
     }
 
+<<<<<<< HEAD
+    public String mouseHelper(double mouseX, double mouseY) {
+
+=======
     public String mouseHelper(double mouseX, double mouseY, boolean press) {
+>>>>>>> 8d4ca142e7620ceeab03beabad191d288716a0c3
         int x = (int) Math.round(Math.floor(mouseX));
         int y = (int) Math.round(Math.floor(mouseY));
         String coordinate = String.valueOf(x - XSHIFT) + "," + String.valueOf(y - YSHIFT);
