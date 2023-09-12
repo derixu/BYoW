@@ -68,7 +68,3 @@ top_49887_words.csv
 words_that_start_with_q.csv
 hyponyms1000-subgraph.txt
 synsets1000-subgraph.txt
-
-# Please don't unless you know what you're doing
-*.iml
-**/.idea/**
